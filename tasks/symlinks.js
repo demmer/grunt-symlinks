@@ -9,7 +9,8 @@
 'use strict';
 
 var fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    rimraf = require('rimraf');
 
 module.exports = function(grunt) {
 
@@ -18,7 +19,8 @@ module.exports = function(grunt) {
 
     var options = this.options({
       relativeTo: false,
-      createDir : false
+      createDir : false,
+      overwrite: false
     });
 
     grunt.verbose.writeflags(options, 'Options');
@@ -49,6 +51,9 @@ module.exports = function(grunt) {
           grunt.verbose.writeln('Creating ' + path.dirname(dest).cyan);
           grunt.file.mkdir(path.dirname(dest));
           tally.dirs++;
+        }
+        if (options.overwrite) {
+          rimraf.sync(dest);
         }
         fs.symlinkSync(src, dest, options.type || 'file');
         tally.files++;
