@@ -8,11 +8,10 @@
 
 'use strict';
 
-var fs = require('fs'), path = require('path');
+var fs = require('fs'),
+	path = require('path');
 
 module.exports = function(grunt) {
-
-  var path = require('path');
 
   grunt.registerMultiTask('symlinks', 'Create symlink', function() {
     var kindOf = grunt.util.kindOf;
