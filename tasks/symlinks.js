@@ -9,7 +9,7 @@
 'use strict';
 
 var fs = require('fs'),
-	path = require('path');
+    path = require('path');
 
 module.exports = function(grunt) {
 
