@@ -20,7 +20,8 @@ module.exports = function(grunt) {
     var options = this.options({
       relativeTo: false,
       createDir : false,
-      overwrite: false
+      overwrite: false,
+      keepExisting: false
     });
 
     grunt.verbose.writeflags(options, 'Options');
@@ -54,6 +55,21 @@ module.exports = function(grunt) {
         }
         if (options.overwrite) {
           rimraf.sync(dest);
+        }
+        if (options.keepExisting && fs.existsSync(dest)) {
+            var stats = fs.lstatSync(dest);
+            if (!stats.isSymbolicLink()) {
+                grunt.warn('Symlink ' + src.cyan + ' -> ' + dest.cyan + ": destination file or directory exists");
+                return;
+            }
+            var oldSrc = fs.readlinkSync(dest);
+            if (oldSrc === src) {
+                grunt.verbose.writeln('Symlink ' + src.cyan + ' -> ' + dest.cyan + ": already exists");
+                return; // skip
+            } else {
+                grunt.log.error('Symlink ' + src.cyan + ' -> ' + dest.cyan + ": link exists to " + oldSrc);
+                return;
+            }
         }
         fs.symlinkSync(src, dest, options.type || 'file');
         tally.files++;
